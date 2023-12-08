@@ -19,6 +19,7 @@ class BookController extends Controller
         foreach ($books as $book) {
             $item = [
                 "id" => $book->id,
+                "claimed" => $book->claimed,
                 "title" => $book->title,
                 "author" => $book->author,
                 "image" => $book->image,
