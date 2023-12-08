@@ -46,7 +46,7 @@ class BookController extends Controller
         {
             return response()->json([
                 'message' => 'No Books Found'
-            ]);
+            ], 404);
         }
         return response()->json(["message" => "Books successfully retrieved", "data" => $books], 200);
         //may need to edit $books variable to delete multiple instances of genre_id if not handled by laravel automatically. (because book table has genre_id and genre table has id)
