@@ -35,8 +35,7 @@ class BookController extends Controller
 
     public function getAllBooks(Request $request) : JsonResponse
     {
-        $books = $this->book->query();
-        $books = $books->get();
+        $books = $this->book->all();
         foreach($books as $book)
         {
             $book->genre;
