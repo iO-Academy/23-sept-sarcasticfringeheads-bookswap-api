@@ -40,6 +40,7 @@ class BookController extends Controller
                 'message' => "Sorry, that book does not exist"
             ], 404);
         }
+        $book->genre;
         return response()->json([
             'message'=> 'Success',
             'data' => $book
