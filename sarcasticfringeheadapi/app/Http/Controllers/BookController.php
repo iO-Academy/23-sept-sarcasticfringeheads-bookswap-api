@@ -45,6 +45,7 @@ private function serializeSingle($book) : array
                     "id" => $book->genre->id, 
                     "name" => $book->genre->name
                 ],
+                "reviews" => $book->reviews,
             ];
     
     return $output;
@@ -89,6 +90,7 @@ private function serializeSingle($book) : array
             ], 404);
         }
         $book->genre;
+        $book->reviews;
         $serialized_books = $this->serializeSingle($book);
         return response()->json([
             'message'=> 'Success',
