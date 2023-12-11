@@ -61,15 +61,17 @@ private function serializeSingle($book) : array
         $books = $this->book->with('genre')->get();
         $claimedFilter = $request->claimed;
 
-        if ($claimedFilter == 1) {
-            $books->where('claimed', $claimedFilter);
-        } else {
-            $books->where('claimed', 0);
+        if (isset($request->claimed) && $claimedFilter == 1) 
+        {
+            $books = $books->where('claimed', $claimedFilter);
+        }
+        else 
+        {
+            $books = $books->where('claimed', 0);
         }
 
         $serialized_books = $this->serializeAll($books);
         
-
         if (count($serialized_books) === 0)
         {
             return response()->json([
