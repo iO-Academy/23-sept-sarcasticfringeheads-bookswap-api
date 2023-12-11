@@ -14,7 +14,7 @@ class BookController extends Controller
         $this->book = $book;
     }
 
-    private function serializeAll($books) : array
+    private function serialize($books) : array
     {
         $output = [];
         foreach ($books as $book) {
@@ -32,24 +32,6 @@ class BookController extends Controller
     }
     return $output;
 }
-
-private function serializeSingle($book) : array
-    {
-            $output = [
-                "id" => $book->id,
-                "claimed" => $book->claimed,
-                "title" => $book->title,
-                "author" => $book->author,
-                "image" => $book->image,
-                "genre" => [
-                    "id" => $book->genre->id, 
-                    "name" => $book->genre->name
-                ],
-                "reviews" => $book->reviews
-                ];
-                return $output; 
-    }
-
 
     public function getAllBooks(Request $request) : JsonResponse
     {
@@ -90,11 +72,37 @@ private function serializeSingle($book) : array
             ], 404);
         }
         $book->genre;
-        $book->reviews;
-        $serialized_books = $this->serializeSingle($book);
+        $serialized_books = $this->serialize([$book]);
         return response()->json([
             'message'=> 'Success',
             'data' => $serialized_books
         ], 200);
     }
+
+
+
+    public function ClaimABook(Request $request, $id)
+    {
+        // Validate the request data
+        $validatedData = $request->validate([
+            'name' => 'required',
+            'email' => 'required|email',
+        ]);
+        // Find the book by ID
+        $book = Book::find($id);
+        // Check if the book exists
+        if (!$book) {
+            return response()->json([
+                'message' => "Sorry, that book does not exist"
+            ], 404);
+        }
+
+        // Update the book details
+        $book->user_name = $request->input('name');
+        $book->user_email = $request->input('email');
+        $book->claimed = 1; // Set the claimed column to 1
+        $book->save();
+        return response()->json(['message' => 'Book claimed successfully']);
+    }
 }
+
