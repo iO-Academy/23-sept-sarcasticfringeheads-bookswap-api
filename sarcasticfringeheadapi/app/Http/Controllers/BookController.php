@@ -53,8 +53,23 @@ private function serializeSingle($book) : array
 
     public function getAllBooks(Request $request) : JsonResponse
     {
+        // get all books tick
+        // does user want claimed or unclaimed
+        // filter books to reflect
+        // display
+
         $books = $this->book->with('genre')->get();
+        $claimedFilter = $request->claimed;
+
+        if ($claimedFilter == 1) {
+            $books->where('claimed', $claimedFilter);
+        } else {
+            $books->where('claimed', 0);
+        }
+
         $serialized_books = $this->serializeAll($books);
+        
+
         if (count($serialized_books) === 0)
         {
             return response()->json([
