@@ -14,7 +14,7 @@ class BookController extends Controller
         $this->book = $book;
     }
 
-    private function serialize($books) : array
+    private function serializeAll($books) : array
     {
         $output = [];
         foreach ($books as $book) {
@@ -30,6 +30,23 @@ class BookController extends Controller
                 ],
             ];
     }
+    return $output;
+}
+
+private function serializeSingle($book) : array
+    {
+            $output = [
+                "id" => $book->id,
+                "claimed" => $book->claimed,
+                "title" => $book->title,
+                "author" => $book->author,
+                "image" => $book->image,
+                "genre" => [
+                    "id" => $book->genre->id, 
+                    "name" => $book->genre->name
+                ],
+            ];
+    
     return $output;
 }
 
@@ -72,7 +89,7 @@ class BookController extends Controller
             ], 404);
         }
         $book->genre;
-        $serialized_books = $this->serialize([$book]);
+        $serialized_books = $this->serializeSingle($book);
         return response()->json([
             'message'=> 'Success',
             'data' => $serialized_books
