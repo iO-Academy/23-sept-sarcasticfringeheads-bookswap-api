@@ -53,11 +53,7 @@ private function serializeSingle($book) : array
 
     public function getAllBooks(Request $request) : JsonResponse
     {
-        $books = $this->book->all();
-        foreach($books as $book)
-        {
-            $book->genre;
-        }
+        $books = $this->book->with('genre')->get();
         $serialized_books = $this->serializeAll($books);
         if (count($serialized_books) === 0)
         {
