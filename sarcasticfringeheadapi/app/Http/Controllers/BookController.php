@@ -98,7 +98,7 @@ private function serializeSingle($book) : array
 
 
 
-    public function ClaimABook(Request $request, $id)
+    public function claimABook(Request $request, $id)
     {
         // Validate the request data
         $validatedData = $request->validate([
@@ -120,6 +120,29 @@ private function serializeSingle($book) : array
         $book->claimed = 1; // Set the claimed column to 1
         $book->save();
         return response()->json(['message' => 'Book claimed successfully']);
+    }
+
+    public function UnclaimABook(Request $request, $id)
+    {
+        // Validate the request data
+        $validatedData = $request->validate([
+            'email' => 'required|email',
+        ]);
+        // Find the book by ID
+        $book = Book::find($id);
+        // Check if the book exists
+        if (!$book) {
+            return response()->json([
+                'message' => "Sorry, that book does not exist"
+            ], 404);
+        }
+
+        // Update the book details
+        $book->user_name = 'NULL';
+        $book->user_email ='NULL';
+        $book->claimed = 0; // Set the claimed column to 1
+        $book->save();
+        return response()->json(['message' => 'Book returned successfully']);
     }
 }
 
