@@ -124,6 +124,9 @@ private function serializeSingle($book) : array
         return response()->json(['message' => 'Book claimed successfully']);
     }
 
+
+
+    
     public function UnclaimABook(Request $request, $id)
     {
         // Validate the request data
@@ -137,14 +140,28 @@ private function serializeSingle($book) : array
             return response()->json([
                 'message' => "Sorry, that book does not exist"
             ], 404);
-        }
+        
+        } else {
 
-        // Update the book details
-        $book->user_name = 'NULL';
-        $book->user_email ='NULL';
-        $book->claimed = 0; // Set the claimed column to 1
-        $book->save();
-        return response()->json(['message' => 'Book returned successfully']);
+            $enteredEmail = $request->input('email');
+            $correctEmail = $book->user_email;
+
+            if ($enteredEmail !== $correctEmail) {
+                return response()->json([
+                    'message' => "Sorry, the email does not match"
+                ], 404);    
+        }
+            // Update the book details
+            $book->user_name = 'NULL';
+            $book->user_email ='NULL';
+            $book->claimed = 0; // Set the claimed column to 1
+            $book->save();
+            
+            return response()->json(['message' => 'Book returned successfully']);
+
+
+            }
+     
     }
 }
 
