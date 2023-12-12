@@ -3,15 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Genre;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
 class BookController extends Controller
 {
     private Book $book;
-    public function __construct(Book $book)
+    private Genre $genre;
+    public function __construct(Book $book, Genre $genre)
     {
         $this->book = $book;
+        $this->genre = $genre;
     }
 
     private function serializeAll($books) : array
@@ -59,15 +62,24 @@ private function serializeSingle($book) : array
         // display
 
         $books = $this->book->with('genre')->get();
-        $claimedFilter = $request->claimed;
+        $request->claimed;
 
-        if ($request->claimed && $claimedFilter == 1) 
+        if ($request->claimed)
         {
-            $books = $books->where('claimed', $claimedFilter);
+            if ($request->claimed === 1)
+            {
+                $books = $books->where('claimed', 1);
+            }
+        
+            else if ($request->claimed === 0)
+            {
+                $books = $books->where('claimed', 0);
+            }
         }
-        else 
+        
+        if ($request->genre && $request->genre > 0 && $request->genre <= $this->genre->count())
         {
-            $books = $books->where('claimed', 0);
+            $books = $books->where('genre_id', $request->genre);
         }
 
         $serialized_books = $this->serializeAll($books);
