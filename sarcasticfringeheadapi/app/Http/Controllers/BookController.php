@@ -166,6 +166,31 @@ private function serializeSingle($book) : array
 
     public function addABook (Request $request) {
         // post request 
+        $request->validate([
+            'title'=> 'required|max:255',
+            'author'=> 'required|max:255',
+            'genre'=> 'required|max:20',
+            'blurb'=> 'max 2000',
+            'image'=> 'max 1000',
+            'year'=> 'max 11'
+        ]);
+        
+        $newBook = new Book();
+        $newBook->title = $request->title;
+        $newBook->author = $request->author;
+        $newBook->blurb= $request->blurb;
+        $newBook->genre = $request->genre;
+        $newBook->image = $request->image;
+        $newBook->year = $request->year;
+
+        $newBook->save();
+        
+        if (!$newBook){
+            return response()->json(['message' => 'unsuccessful'], 500);
+        }
+        return response()->json(['message' => 'Book added successfully'], 201);
+        
+
         // create new object book
         // what fields need to be included
         // include title, author, genre, year, (image/blurb optional?)
