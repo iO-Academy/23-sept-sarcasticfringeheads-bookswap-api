@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -9,7 +8,6 @@ use App\Models\Book;
 
 class GenreController extends Controller
 {
-
     private Genre $genre;
     public function __construct(Genre $genre)
     {
