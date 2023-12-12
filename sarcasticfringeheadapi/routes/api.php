@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\GenreController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,3 +27,5 @@ Route::controller(BookController::class)->group(function () {
     Route::put('/books/return/{id}','UnclaimABook');
 
 });
+
+Route::get('/genres', [GenreController::class, 'getAllGenres']);
