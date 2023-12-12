@@ -3,15 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Genre;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
 class BookController extends Controller
 {
     private Book $book;
-    public function __construct(Book $book)
+    private Genre $genre;
+    public function __construct(Book $book, Genre $genre)
     {
         $this->book = $book;
+        $this->genre = $genre;
     }
 
     private function serializeAll($books) : array
@@ -59,15 +62,24 @@ private function serializeSingle($book) : array
         // display
 
         $books = $this->book->with('genre')->get();
-        $claimedFilter = $request->claimed;
+        $request->claimed;
 
-        if (isset($request->claimed) && $claimedFilter == 1) 
+        if ($request->claimed)
         {
-            $books = $books->where('claimed', $claimedFilter);
+            if ($request->claimed === 1)
+            {
+                $books = $books->where('claimed', 1);
+            }
+        
+            else if ($request->claimed === 0)
+            {
+                $books = $books->where('claimed', 0);
+            }
         }
-        else 
+        
+        if ($request->genre && $request->genre > 0 && $request->genre <= $this->genre->count())
         {
-            $books = $books->where('claimed', 0);
+            $books = $books->where('genre_id', $request->genre);
         }
 
         $serialized_books = $this->serializeAll($books);
@@ -86,7 +98,7 @@ private function serializeSingle($book) : array
         $book = $this->book->find($id);
         if (!$book) {
             return response()->json([
-                'message' => "Sorry, that book does not exist"
+                'message' => "Book with id $id not found"
             ], 404);
         }
         $book->genre;
@@ -103,7 +115,7 @@ private function serializeSingle($book) : array
     public function claimABook(Request $request, $id)
     {
         // Validate the request data
-        $validatedData = $request->validate([
+            $request->validate([
             'name' => 'required',
             'email' => 'required|email',
         ]);
@@ -115,11 +127,17 @@ private function serializeSingle($book) : array
                 'message' => "Sorry, that book does not exist"
             ], 404);
         }
+        if ($book->claimed === 1)
+        {
+            return response()->json([
+                'message' => "Book 10 is already claimed"
+            ], 400);
+        }
 
         // Update the book details
         $book->user_name = $request->input('name');
         $book->user_email = $request->input('email');
-        $book->claimed = 1; // Set the claimed column to 1
+        $book->claimed = 1; 
         $book->save();
         return response()->json(['message' => 'Book claimed successfully']);
     }
