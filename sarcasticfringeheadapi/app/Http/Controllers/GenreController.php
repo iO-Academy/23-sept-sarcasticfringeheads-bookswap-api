@@ -1,8 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use App\Models\Genre;
+use App\Models\Book;
 
 
 class GenreController extends Controller
@@ -37,6 +39,4 @@ class GenreController extends Controller
             'data' => $serialized_genres
         ], 200);
     }
-
-    
 }
