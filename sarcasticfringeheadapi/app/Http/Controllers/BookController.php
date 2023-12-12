@@ -163,5 +163,16 @@ private function serializeSingle($book) : array
             }
      
     }
+
+    public function addABook (Request $request) {
+        // post request 
+        // create new object book
+        // what fields need to be included
+        // include title, author, genre, year, (image/blurb optional?)
+        // $newBook->title = $request->"title" ?
+        // Validate the input
+        // save the book
+        // success and error responses
+    }
 }
 
