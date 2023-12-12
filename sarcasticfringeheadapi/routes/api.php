@@ -22,10 +22,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::controller(BookController::class)->group(function () {
     Route::get('/books', 'getAllBooks');
-    Route::get('/books/{id}','getSingleBookById');
     Route::put('/books/claim/{id}','claimABook');
     Route::put('/books/return/{id}','UnclaimABook');
     Route::post('/books', 'addABook');
+    Route::get('/books/{id}','getSingleBookById');
 
 });
 
