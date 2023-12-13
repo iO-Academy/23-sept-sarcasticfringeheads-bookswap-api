@@ -74,14 +74,7 @@ public function test_GetAllBookFailure(): void
         $response->assertJson(function(AssertableJson $json){
             $json->hasAll(['message', 'data'])->has('data', 1);
         });
-
-        
-        
-        // test incomplete.. need to check that the returned length of data is 1 (returned 1 book successfully with title of snozz and id of 51)
-
     }
-
-
 
     public function test_SingleBookSuccess(): void
     {
