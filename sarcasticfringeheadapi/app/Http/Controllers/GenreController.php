@@ -1,13 +1,9 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use App\Models\Genre;
-
 
 class GenreController extends Controller
 {
-
     private Genre $genre;
     public function __construct(Genre $genre)
     {
@@ -37,6 +33,4 @@ class GenreController extends Controller
             'data' => $serialized_genres
         ], 200);
     }
-
-    
 }

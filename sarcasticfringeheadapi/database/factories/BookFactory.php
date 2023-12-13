@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Genre;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,12 +19,16 @@ class BookFactory extends Factory
     {
         return [
             'title' => $this->faker->text(200),
-            'author'=> $this->faker->text(100),
-            'image'=> $this->faker->imageUrl(),
-            'genre_id'=> rand(0,3),
-            'created_at'=> $this->faker->dateTime(),
-            'updated_at'=> $this->faker->dateTime(),
-            'claimed'=>rand(0,1)
+            'author' => $this->faker->text(20),
+            'user_email' => 'elonmusk@tesla.com',
+            'user_name' => 'Elon Musk',
+            'blurb' => $this->faker->text(200),
+            'year' => $this->faker->year(),
+            'image' => $this->faker->imageUrl(),
+            'genre_id' => Genre::factory(),
+            'created_at' => $this->faker->dateTime(),
+            'updated_at' => $this->faker->dateTime(),
+            'claimed' => 0
         ];
     }
 }

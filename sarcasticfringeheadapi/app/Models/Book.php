@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Book extends Model
 {
     use HasFactory;
+
     public function genre() : BelongsTo
     {
         return $this->belongsTo(Genre::class);
