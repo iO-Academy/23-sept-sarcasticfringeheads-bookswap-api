@@ -28,6 +28,4 @@ Route::controller(BookController::class)->group(function () {
     Route::get('/books/{id}','getSingleBookById');
 
 });
-
 Route::get('/genres', [GenreController::class, 'getAllGenres']);
-Route::get('/books/genres/{genre_id}', [GenreController::class,'getSingleGenre']);

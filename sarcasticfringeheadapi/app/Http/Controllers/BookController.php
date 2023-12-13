@@ -63,9 +63,8 @@ private function serializeSingle($book) : array
         // filter books to reflect
         // display
 
-        $books = $this->book->with('genre')->get();
-        $request->claimed;
 
+<<<<<<< HEAD
         // Extract the search terms from the request
         $searchTerms = $request->input('searchTerms');
 
@@ -86,20 +85,21 @@ private function serializeSingle($book) : array
             });
         }
 
+=======
+        $request->validate([
+            'genre' => 'exists:genres,id',
+            'claimed' => 'integer|min:0|max:1'
+        ]);
+        $books = $this->book->with('genre')->get();
+
+       
+>>>>>>> main
         if ($request->claimed)
         {
-            if ($request->claimed === 1)
-            {
-                $books = $books->where('claimed', 1);
-            }
-        
-            else if ($request->claimed === 0)
-            {
-                $books = $books->where('claimed', 0);
-            }
+            $books = $books->where('claimed', $request->claimed);
         }
-        
-        if ($request->genre && $request->genre > 0 && $request->genre <= $this->genre->count())
+
+        if ($request->genre)
         {
             $books = $books->where('genre_id', $request->genre);
         }
@@ -225,9 +225,9 @@ private function serializeSingle($book) : array
         $newBook->save();
         
         if (!$newBook){
-            return response()->json(['message' => 'unsuccessful'], 500);
+            return response()->json(['message' => 'Unexpected error occured'], 500);
         }
-        return response()->json(['message' => 'Book added successfully'], 201);
+        return response()->json(['message' => 'Book created'], 201);
         
 
         // create new object book
