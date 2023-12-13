@@ -219,7 +219,7 @@ private function serializeSingle($book) : array
             'name'=>'required|max:255',
             'rating'=>'required|max:5',
             'review'=>'required|max:5000',
-            'book_id'=> 'required|max:5'
+            'book_id'=> 'required|max:5|exists:books,id'
         ]);
 
         $newReview = new Review();
@@ -235,4 +235,3 @@ private function serializeSingle($book) : array
         return response()->json(["message"=> "Unexpected error occurred"], 500);
     }
 }
-
