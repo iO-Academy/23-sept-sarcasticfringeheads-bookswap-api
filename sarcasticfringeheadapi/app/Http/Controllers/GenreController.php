@@ -5,7 +5,6 @@ use Illuminate\Http\JsonResponse;
 use App\Models\Genre;
 use App\Models\Book;
 
-
 class GenreController extends Controller
 {
     private Genre $genre;
