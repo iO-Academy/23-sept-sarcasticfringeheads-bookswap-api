@@ -79,7 +79,9 @@ private function serializeSingle($book) : array
             }
         }
         
-        if ($request->genre && $request->validate(['genre' => 'exists:genres,id']))
+        $request->validate(['genre' => 'exists:genres,id']);
+        
+        if ($request->genre)
         {
             $books = $books->where('genre_id', $request->genre);
         }
