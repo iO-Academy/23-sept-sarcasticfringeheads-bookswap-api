@@ -66,6 +66,26 @@ private function serializeSingle($book) : array
         $books = $this->book->with('genre')->get();
         $request->claimed;
 
+        // Extract the search terms from the request
+        $searchTerms = $request->input('searchTerms');
+
+        // If search terms are present, filter the books
+        if ($searchTerms) {
+        $searchTerms = explode(' ', $searchTerms); // Split the search terms into an array
+
+        // Build a where clause to filter books based on search terms
+        $whereClause = [];
+        foreach ($searchTerms as $searchTerm) {
+            $whereClause[] = ['title', 'LIKE', "%$searchTerm%"] // Search for the term in the book title
+                          + ['author', 'LIKE', "%$searchTerm%"] // Search for the term in the book author
+                          + ['blurb', 'LIKE', "%$searchTerm%"]; // Search for the term in the book blurb
+        }
+
+        $books = $books->where(function ($query) use ($whereClause) {
+            $query->whereRaw('(' . implode(' OR ', $whereClause) . ')');
+            });
+        }
+
         if ($request->claimed)
         {
             if ($request->claimed === 1)
