@@ -226,7 +226,7 @@ private function serializeSingle($book) : array
         $newReview->name = $request->name;
         $newReview->rating = $request->rating;
         $newReview->review = $request->review;
-
+        $newReview->book_id = $request->book_id;
         $newReview->save();
 
         if ($newReview){

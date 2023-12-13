@@ -26,6 +26,7 @@ Route::controller(BookController::class)->group(function () {
     Route::put('/books/return/{id}','UnclaimABook');
     Route::post('/books', 'addABook');
     Route::get('/books/{id}','getSingleBookById');
+    Route::post('/reviews','createBookReview');
 
 });
 Route::get('/genres', [GenreController::class, 'getAllGenres']);
