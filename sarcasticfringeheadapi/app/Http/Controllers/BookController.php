@@ -79,7 +79,7 @@ private function serializeSingle($book) : array
             }
         }
         
-        if ($request->genre && $request->genre > 0 && $request->genre <= $this->genre->count())
+        if ($request->genre && $request->validate(['genre' => 'exists:genres,id']))
         {
             $books = $books->where('genre_id', $request->genre);
         }
@@ -205,9 +205,9 @@ private function serializeSingle($book) : array
         $newBook->save();
         
         if (!$newBook){
-            return response()->json(['message' => 'unsuccessful'], 500);
+            return response()->json(['message' => 'Unexpected error occured'], 500);
         }
-        return response()->json(['message' => 'Book added successfully'], 201);
+        return response()->json(['message' => 'Book created'], 201);
         
 
         // create new object book

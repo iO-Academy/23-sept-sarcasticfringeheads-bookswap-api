@@ -108,7 +108,7 @@ public function test_GetAllBookFailure(): void
         ];
         
         $response = $this->postJson('/api/books', $book_data);
-        $response->assertStatus(201)->assertJson(['message' => 'Book added successfully']);
+        $response->assertStatus(201)->assertJson(['message' => 'Book created']);
 
         $this->assertDatabaseHas('books', [
             'title'=> 'Harry Pozza',
@@ -204,7 +204,7 @@ public function test_GetAllBookFailure(): void
             'email' => 'elonmusk',
         ];
         $response = $this->putJson('api/books/return/1', $data);
-
+        $response->assertInvalid('email');
         $response->assertStatus(422)->assertJson(['message' => 'The email field must be a valid email address.']);
 
         $this->assertDatabaseHas('books', [
