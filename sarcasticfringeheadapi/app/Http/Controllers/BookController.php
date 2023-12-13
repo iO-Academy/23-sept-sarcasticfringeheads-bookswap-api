@@ -63,24 +63,19 @@ private function serializeSingle($book) : array
         // filter books to reflect
         // display
 
-        $books = $this->book->with('genre')->get();
-        $request->claimed;
 
+        $request->validate([
+            'genre' => 'exists:genres,id',
+            'claimed' => 'integer|min:0|max:1'
+        ]);
+        $books = $this->book->with('genre')->get();
+
+       
         if ($request->claimed)
         {
-            if ($request->claimed === 1)
-            {
-                $books = $books->where('claimed', 1);
-            }
-        
-            else if ($request->claimed === 0)
-            {
-                $books = $books->where('claimed', 0);
-            }
+            $books = $books->where('claimed', $request->claimed);
         }
-        
-        $request->validate(['genre' => 'exists:genres,id']);
-        
+
         if ($request->genre)
         {
             $books = $books->where('genre_id', $request->genre);

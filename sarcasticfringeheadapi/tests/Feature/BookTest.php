@@ -49,6 +49,20 @@ public function test_GetAllBookFailure(): void
         $response->assertStatus(404)->assertJson(['message' => 'No Books Found']);
     }
 
+    public function test_GetAllBookInvalidGenre(): void
+    {
+        Book::factory(1)->create();
+        $response = $this->getJson('/api/books?genre=2');
+        $response->assertStatus(422)->assertJson(['message' => 'The selected genre is invalid.', "errors" => ['genre' => ['The selected genre is invalid.']]]);
+    }
+
+    public function test_GetAllBookInvalidClaimed(): void
+    {
+        Book::factory(1)->create();
+        $response = $this->getJson('/api/books?claimed=2');
+        $response->assertStatus(422)->assertJson(['message' => 'The claimed field must not be greater than 1.']);
+    }
+
 
 
     public function test_SingleBookSuccess(): void
