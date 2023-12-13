@@ -95,10 +95,6 @@ public function test_GetAllBookFailure(): void
         $response->assertStatus(404)->assertJson(['message' => 'Book with id 4 not found']);
     }
 
-
-    // 12th dec
-    //TODO: claim, return, add
-
     public function test_AddBookSuccess(): void
     {
         Genre::factory(1)->create();
@@ -174,8 +170,7 @@ public function test_GetAllBookFailure(): void
 
     public function test_returnBookSuccess(): void 
     {
-        Genre::factory(1)->create();
-        $book = Book::factory(1)->create();
+        $book = Book::factory()->create();
         $book->claimed = 1;
         $book->save();
 
@@ -190,11 +185,32 @@ public function test_GetAllBookFailure(): void
         $response->assertJson(['message' => 'Book returned successfully']);
 
         $this->assertDatabaseHas('books', [
-            'title' => 'TestTitle',
-            'blurb' => 'TestBlurb',
             'claimed' => 0,
+            'id' => 1,
             'genre_id' => 1,
-            'year' => 2000,
+        ]);
+    }
+
+    public function test_returnBookFail(): void 
+    {
+        $book = Book::factory()->create();
+        $book->claimed = 1;
+        $book->save();
+
+        // edit a pre existing book from unclaimed to claimed 
+        // then go and check if the book you claimed is claimed and that the user_name and user_email are in there
+        //, and all other books are still unclaimed. 
+        $data = [
+            'email' => 'elonmusk',
+        ];
+        $response = $this->putJson('api/books/return/1', $data);
+
+        $response->assertStatus(422)->assertJson(['message' => 'The email field must be a valid email address.']);
+
+        $this->assertDatabaseHas('books', [
+            'claimed' => 1,
+            'id' => 1,
+            'genre_id' => 1,
         ]);
     }
 }
