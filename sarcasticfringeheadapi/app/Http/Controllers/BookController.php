@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Genre;
+use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
@@ -211,6 +212,27 @@ private function serializeSingle($book) : array
         // Validate the input
         // save the book
         // success and error responses
+    }
+
+    public function createBookReview(Request $request) {
+        $request->validate([
+            'name'=>'required|max:255',
+            'rating'=>'required|max:5',
+            'review'=>'required|max:5000',
+            'book_id'=> 'required|max:5'
+        ]);
+
+        $newReview = new Review();
+        $newReview->name = $request->name;
+        $newReview->rating = $request->rating;
+        $newReview->review = $request->review;
+
+        $newReview->save();
+
+        if ($newReview){
+            return response()->json(['message' => 'Review created'], 201);
+        }
+        return response()->json(["message"=> "Unexpected error occurred"], 500);
     }
 }
 
