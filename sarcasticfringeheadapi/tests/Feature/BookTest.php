@@ -63,6 +63,19 @@ public function test_GetAllBookFailure(): void
         $response->assertStatus(422)->assertJson(['message' => 'The claimed field must not be greater than 1.']);
     }
 
+    public function test_GetAllBookSearchSuccess(): void 
+    {
+        Book::factory(50)->create();
+        $book = Book::factory()->create();
+        $book->title = 'snozz';
+        $book->save();
+        
+        $response = $this->getJson('/api/books?search=snozz');
+        $response->assertJson(['message' => 'Books successfully retrieved']);
+        // test incomplete.. need to check that the returned length of data is 1 (returned 1 book successfully with title of snozz and id of 51)
+
+    }
+
 
 
     public function test_SingleBookSuccess(): void

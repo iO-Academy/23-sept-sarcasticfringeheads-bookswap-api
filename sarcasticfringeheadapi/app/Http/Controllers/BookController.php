@@ -58,52 +58,30 @@ private function serializeSingle($book) : array
 
     public function getAllBooks(Request $request) : JsonResponse
     {
-        // get all books tick
-        // does user want claimed or unclaimed
-        // filter books to reflect
-        // display
-
-
-<<<<<<< HEAD
-        // Extract the search terms from the request
-        $searchTerms = $request->input('searchTerms');
-
-        // If search terms are present, filter the books
-        if ($searchTerms) {
-        $searchTerms = explode(' ', $searchTerms); // Split the search terms into an array
-
-        // Build a where clause to filter books based on search terms
-        $whereClause = [];
-        foreach ($searchTerms as $searchTerm) {
-            $whereClause[] = ['title', 'LIKE', "%$searchTerm%"] // Search for the term in the book title
-                          + ['author', 'LIKE', "%$searchTerm%"] // Search for the term in the book author
-                          + ['blurb', 'LIKE', "%$searchTerm%"]; // Search for the term in the book blurb
-        }
-
-        $books = $books->where(function ($query) use ($whereClause) {
-            $query->whereRaw('(' . implode(' OR ', $whereClause) . ')');
-            });
-        }
-
-=======
         $request->validate([
             'genre' => 'exists:genres,id',
-            'claimed' => 'integer|min:0|max:1'
+            'claimed' => 'integer|min:0|max:1',
+            'search' => 'string |min:0|max:1000|nullable'
         ]);
-        $books = $this->book->with('genre')->get();
 
-       
->>>>>>> main
+        $query = $this->book->query();
+
+        if ($request->search)
+        {
+            $query = $query->where('title','like','%' . $request->search . '%')->orWhere('author','like', '%' . $request->search . '%')->orWhere('blurb', 'like', '%' . $request->search . '%');
+        }
+        
         if ($request->claimed)
         {
-            $books = $books->where('claimed', $request->claimed);
+            $query = $query->where('claimed', $request->claimed);
         }
 
         if ($request->genre)
         {
-            $books = $books->where('genre_id', $request->genre);
+            $query = $query->where('genre_id', $request->genre);
         }
-
+        
+        $books = $query->get();
         $serialized_books = $this->serializeAll($books);
         
         if (count($serialized_books) === 0)
@@ -123,16 +101,12 @@ private function serializeSingle($book) : array
                 'message' => "Book with id $id not found"
             ], 404);
         }
-        $book->genre;
-        $book->reviews;
         $serialized_books = $this->serializeSingle($book);
         return response()->json([
             'message'=> 'Success',
             'data' => $serialized_books
         ], 200);
     }
-
-
 
     public function claimABook(Request $request, $id)
     {
