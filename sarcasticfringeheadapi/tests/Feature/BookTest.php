@@ -71,7 +71,12 @@ public function test_GetAllBookFailure(): void
         $book->save();
         
         $response = $this->getJson('/api/books?search=snozz');
-        $response->assertJson(['message' => 'Books successfully retrieved']);
+        $response->assertJson(function(AssertableJson $json){
+            $json->hasAll(['message', 'data'])->has('data', 1);
+        });
+
+        
+        
         // test incomplete.. need to check that the returned length of data is 1 (returned 1 book successfully with title of snozz and id of 51)
 
     }
