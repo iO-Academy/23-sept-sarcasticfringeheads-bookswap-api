@@ -2,7 +2,6 @@
 namespace App\Http\Controllers;
 use App\Models\Genre;
 
-
 class GenreController extends Controller
 {
     private Genre $genre;
