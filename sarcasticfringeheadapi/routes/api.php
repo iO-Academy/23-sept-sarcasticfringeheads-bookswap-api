@@ -27,6 +27,5 @@ Route::controller(BookController::class)->group(function () {
     Route::post('/books', 'addABook');
     Route::get('/books/{id}','getSingleBookById');
     Route::post('/reviews','createBookReview');
-
 });
 Route::get('/genres', [GenreController::class, 'getAllGenres']);
