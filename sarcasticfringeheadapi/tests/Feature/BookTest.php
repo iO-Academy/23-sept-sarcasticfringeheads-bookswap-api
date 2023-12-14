@@ -126,7 +126,8 @@ public function test_GetAllBookFailure(): void
                             'genre.name'=>'string',
                             'blurb' => 'string',
                             'year' => 'integer',
-                            'reviews' => 'array'
+                            'reviews' => 'array',
+                            'claimed_by_name' => 'string|null'
                         ]);
                     });
             });
