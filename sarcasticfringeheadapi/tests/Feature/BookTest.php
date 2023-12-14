@@ -29,14 +29,14 @@ class BookTest extends TestCase
                     ->has('data', 1, function(AssertableJson $json){
                         $json->hasAll(['id', 'claimed','title', 'author', 'image', 'genre'])
                         ->whereAllType([
-                            'id'=> 'integer',
-                            'claimed'=> 'integer',
-                            'title'=>'string',
-                            'author'=> 'string',
-                            'image'=> 'string',
-                            'genre'=>'array',
-                            'genre.id'=>'integer',
-                            'genre.name'=>'string'
+                            'id' => 'integer',
+                            'claimed' => 'integer',
+                            'title' =>'string',
+                            'author' => 'string',
+                            'image' => 'string',
+                            'genre' =>'array',
+                            'genre.id' =>'integer',
+                            'genre.name' =>'string'
                         ]);
                     });
             });
@@ -63,7 +63,44 @@ public function test_GetAllBookFailure(): void
         $response->assertStatus(422)->assertJson(['message' => 'The claimed field must not be greater than 1.']);
     }
 
+    public function test_GetAllBookSearchSuccess(): void 
+    {
+        Book::factory(50)->create();
+        $book = Book::factory()->create();
+        $book->title = 'snozz';
+        $book->save();
+        
+        $response = $this->getJson('/api/books?search=snozz');
+        $response->assertJson(function(AssertableJson $json){
+            $json->hasAll(['message', 'data'])->has('data', 1);
+        });
+    }
 
+    public function test_GetAllBookSearchWithGenreSuccess(): void
+    {
+        Book::factory(5)->create();
+        $book = Book::factory()->create();
+        $book->title = 'snozz';
+        $book->save();
+
+        $response = $this->getJson('/api/books?search=snozz&genre=6');
+        $response->assertJson(function(AssertableJson $json){
+            $json->hasAll(['message', 'data'])->has('data', 1);
+        });
+    }
+
+    public function test_GetAllBookSearchWithGenreFail(): void
+    {
+        Book::factory(4)->create();
+        $book = Book::factory()->create();
+        $book->title = 'snozz';
+        $book->save();
+
+        $response = $this->getJson('/api/books?search=snozz&genre=6');
+        $response->assertJson(function(AssertableJson $json){
+            $json->hasAll(['message', 'errors'])->has('errors', 1);
+        });
+    }
 
     public function test_SingleBookSuccess(): void
     {

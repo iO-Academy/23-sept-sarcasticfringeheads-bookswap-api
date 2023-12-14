@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Genre;
+use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
@@ -58,29 +59,30 @@ private function serializeSingle($book) : array
 
     public function getAllBooks(Request $request) : JsonResponse
     {
-        // get all books tick
-        // does user want claimed or unclaimed
-        // filter books to reflect
-        // display
-
-
         $request->validate([
             'genre' => 'exists:genres,id',
-            'claimed' => 'integer|min:0|max:1'
+            'claimed' => 'integer|min:0|max:1',
+            'search' => 'string |min:0|max:1000|nullable'
         ]);
-        $books = $this->book->with('genre')->get();
 
-       
+        $query = $this->book->query();
+
+        if ($request->search)
+        {
+            $query = $query->where('title','like','%' . $request->search . '%')->orWhere('author','like', '%' . $request->search . '%')->orWhere('blurb', 'like', '%' . $request->search . '%');
+        }
+        
         if ($request->claimed)
         {
-            $books = $books->where('claimed', $request->claimed);
+            $query = $query->where('claimed', $request->claimed);
         }
 
         if ($request->genre)
         {
-            $books = $books->where('genre_id', $request->genre);
+            $query = $query->where('genre_id', $request->genre);
         }
-
+        
+        $books = $query->get();
         $serialized_books = $this->serializeAll($books);
         
         if (count($serialized_books) === 0)
@@ -100,16 +102,12 @@ private function serializeSingle($book) : array
                 'message' => "Book with id $id not found"
             ], 404);
         }
-        $book->genre;
-        $book->reviews;
         $serialized_books = $this->serializeSingle($book);
         return response()->json([
             'message'=> 'Success',
             'data' => $serialized_books
         ], 200);
     }
-
-
 
     public function claimABook(Request $request, $id)
     {
@@ -215,5 +213,25 @@ private function serializeSingle($book) : array
         // save the book
         // success and error responses
     }
-}
 
+    public function createBookReview(Request $request) {
+        $request->validate([
+            'name'=>'required|max:255',
+            'rating'=>'required|max:5',
+            'review'=>'required|max:5000',
+            'book_id'=> 'required|max:5|exists:books,id'
+        ]);
+
+        $newReview = new Review();
+        $newReview->name = $request->name;
+        $newReview->rating = $request->rating;
+        $newReview->review = $request->review;
+        $newReview->book_id = $request->book_id;
+        $newReview->save();
+
+        if ($newReview){
+            return response()->json(['message' => 'Review created'], 201);
+        }
+        return response()->json(["message"=> "Unexpected error occurred"], 500);
+    }
+}
