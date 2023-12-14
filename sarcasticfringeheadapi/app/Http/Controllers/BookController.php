@@ -46,6 +46,7 @@ private function serializeSingle($book) : array
                 "title" => $book->title,
                 "author" => $book->author,
                 "blurb" => $book->blurb,
+                "claimed_by_name" => $book->user_name,
                 "year" => $book->year,
                 "image" => $book->image,
                 "genre" => [
@@ -117,7 +118,7 @@ private function serializeSingle($book) : array
             'email' => 'required|email',
         ]);
         // Find the book by ID
-        $book = Book::find($id);
+        $book = $this->book->find($id);
         // Check if the book exists
         if (!$book) {
             return response()->json([
@@ -147,7 +148,7 @@ private function serializeSingle($book) : array
             'email' => 'required|email',
         ]);
         // Find the book by ID
-        $book = Book::find($id);
+        $book = $this->book->find($id);
         // Check if the book exists
         if (!$book) {
             return response()->json([
