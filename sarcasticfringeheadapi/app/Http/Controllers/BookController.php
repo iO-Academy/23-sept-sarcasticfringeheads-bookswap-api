@@ -63,16 +63,12 @@ private function serializeSingle($book) : array
         $request->validate([
             'genre' => 'exists:genres,id',
             'claimed' => 'integer|min:0|max:1',
-            'search' => 'string |min:0|max:1000|nullable'
+            'search' => 'string|min:0|max:1000|nullable'
         ]);
 
         $query = $this->book->query();
 
-        if ($request->search)
-        {
-            $query = $query->where('title','like','%' . $request->search . '%')->orWhere('author','like', '%' . $request->search . '%')->orWhere('blurb', 'like', '%' . $request->search . '%');
-        }
-        
+
         if ($request->claimed)
         {
             $query = $query->where('claimed', $request->claimed);
@@ -82,6 +78,12 @@ private function serializeSingle($book) : array
         {
             $query = $query->where('genre_id', $request->genre);
         }
+
+        if ($request->search)
+        {
+            $query = $query->where('title','like','%' . $request->search . '%')->orWhere('author','like', '%' . $request->search . '%')->orWhere('blurb', 'like', '%' . $request->search . '%');
+        }
+    
         
         $books = $query->get();
         $serialized_books = $this->serializeAll($books);
