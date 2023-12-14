@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('books', function (Blueprint $table) {
             $table->string('description', 1000)->nullable();
-            $table->integer('year')->currentYear();
+            $table->integer('year')->currentYear()->nullable();
         });
     }
 

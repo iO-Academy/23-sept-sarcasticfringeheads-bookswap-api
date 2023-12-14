@@ -32,6 +32,7 @@ class BookController extends Controller
                     "id" => $book->genre->id, 
                     "name" => $book->genre->name
                 ],
+                
             ];
     }
     return $output;
@@ -51,9 +52,8 @@ private function serializeSingle($book) : array
                     "id" => $book->genre->id, 
                     "name" => $book->genre->name
                 ],
-                "reviews" => $book->reviews,
+                "reviews" => $book->reviews
             ];
-    
     return $output;
 }
 
@@ -169,12 +169,8 @@ private function serializeSingle($book) : array
             $book->user_email ='NULL';
             $book->claimed = 0; // Set the claimed column to 1
             $book->save();
-            
             return response()->json(['message' => 'Book returned successfully']);
-
-
             }
-     
     }
 
     public function addABook (Request $request) {
