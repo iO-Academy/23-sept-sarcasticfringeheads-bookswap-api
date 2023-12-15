@@ -8,6 +8,12 @@ use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
+
+// **TODO**
+
+//check genre:exists for adding a book 
+
+//if search doesnt return anything, DO NOT TRY TO FIND THE RELATED REVIEWS AND GENRES. (dont link on null);
 class BookController extends Controller
 {
     private Book $book;
