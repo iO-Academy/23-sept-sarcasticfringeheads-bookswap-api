@@ -7,21 +7,24 @@ use App\Models\Genre;
 use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Carbon\Carbon;
 
 
 // **TODO**
 
-//check genre:exists for adding a book 
+//check genre:exists for adding a book -> done
 
-//if search doesnt return anything, DO NOT TRY TO FIND THE RELATED REVIEWS AND GENRES. (dont link on null);
+//if search doesnt return anything, DO NOT TRY TO FIND THE RELATED REVIEWS AND GENRES. (dont link on null) -> done
 class BookController extends Controller
 {
     private Book $book;
     private Genre $genre;
-    public function __construct(Book $book, Genre $genre)
+    private Carbon $carbon;
+    public function __construct(Book $book, Genre $genre, Carbon $carbon)
     {
         $this->book = $book;
         $this->genre = $genre;
+        $this->carbon = $carbon;
     }
 
     private function serializeAll($books) : array
@@ -92,14 +95,16 @@ private function serializeSingle($book) : array
     
         
         $books = $query->get();
-        $serialized_books = $this->serializeAll($books);
-        
-        if (count($serialized_books) === 0)
+        if (count($books) === 0)
         {
             return response()->json([
                 'message' => 'No Books Found'
             ], 404);
         }
+
+        $serialized_books = $this->serializeAll($books);
+        
+    
         return response()->json(["message" => "Books successfully retrieved", "data" => $serialized_books], 200);
     }
 
@@ -185,12 +190,12 @@ private function serializeSingle($book) : array
     public function addABook (Request $request) {
         // post request 
         $request->validate([
-            'title'=> 'required|max:255',
-            'author'=> 'required|max:255',
-            'genre_id'=> 'required|max:20',
-            'blurb'=> 'max:2000',
-            'image'=> 'max:1000',
-            'year'=> 'max:11'
+            'title'=> 'string|required|max:255',
+            'author'=> 'string|required|max:255',
+            'genre_id'=> 'integer|required|exists:genres,id',
+            'blurb'=> 'string|max:2000',
+            'image'=> 'url|max:1000',
+            'year'=> 'integer|max:' . $this->carbon->now()->year
         ]);
         
         $newBook = new Book();
@@ -221,10 +226,10 @@ private function serializeSingle($book) : array
 
     public function createBookReview(Request $request) {
         $request->validate([
-            'name'=>'required|max:255',
-            'rating'=>'required|max:5',
-            'review'=>'required|max:5000',
-            'book_id'=> 'required|max:5|exists:books,id'
+            'name'=>'string|required|max:255',
+            'rating'=>'integer|required|max:5',
+            'review'=>'string|required|max:5000',
+            'book_id'=> 'integer|required|max:5|exists:books,id'
         ]);
 
         $newReview = new Review();
