@@ -8,6 +8,7 @@ use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 
 
 // **TODO**
@@ -88,9 +89,14 @@ private function serializeSingle($book) : array
             $query = $query->where('genre_id', $request->genre);
         }
 
+        function addSearchToQuery (Builder $q, string $term) 
+        {
+            $q = $q->where('title','like','%' . $term . '%')->orWhere('author','like', '%' . $term . '%')->orWhere('blurb', 'like', '%' . $term . '%');
+        }
+
         if ($request->search)
         {
-            $query = $query->where('title','like','%' . $request->search . '%')->orWhere('author','like', '%' . $request->search . '%')->orWhere('blurb', 'like', '%' . $request->search . '%');
+            addSearchToQuery($query, $request->search);
         }
     
         
