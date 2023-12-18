@@ -29,7 +29,7 @@ class GenreController extends Controller
         $serialized_genres = $this->serializeGenres($genres);
 
         return response()->json([
-            'message' => "Genre's gotted",
+            'message' => "Genre's retrieved",
             'data' => $serialized_genres
         ], 200);
     }
