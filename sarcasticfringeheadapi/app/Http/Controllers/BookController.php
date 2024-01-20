@@ -24,7 +24,7 @@ class BookController extends Controller
         foreach ($books as $book) {
             $output[] = [
                 "id" => $book->id,
-                "claimed" => $book->claimed,
+                "claimed_by_name" => $book->user_name,
                 "title" => $book->title,
                 "author" => $book->author,
                 "image" => $book->image,
@@ -42,7 +42,7 @@ private function serializeSingle($book) : array
     {
             $output = [
                 "id" => $book->id,
-                "claimed" => $book->claimed,
+                "claimed_by_name" => $book->user_name,
                 "title" => $book->title,
                 "author" => $book->author,
                 "blurb" => $book->blurb,
@@ -69,7 +69,11 @@ private function serializeSingle($book) : array
 
         if ($request->search)
         {
-            $query = $query->where('title','like','%' . $request->search . '%')->orWhere('author','like', '%' . $request->search . '%')->orWhere('blurb', 'like', '%' . $request->search . '%');
+            $query = $query->where(function ($query) use ($request) {
+            $query->where('title','like','%' . $request->search . '%')
+            ->orWhere('author','like', '%' . $request->search . '%')
+            ->orWhere('blurb', 'like', '%' . $request->search . '%');
+            });
         }
         
         if ($request->claimed)
@@ -165,8 +169,8 @@ private function serializeSingle($book) : array
                 ], 404);    
         }
             // Update the book details
-            $book->user_name = 'NULL';
-            $book->user_email ='NULL';
+            $book->user_name = null;
+            $book->user_email = null;
             $book->claimed = 0; // Set the claimed column to 1
             $book->save();
             return response()->json(['message' => 'Book returned successfully']);
