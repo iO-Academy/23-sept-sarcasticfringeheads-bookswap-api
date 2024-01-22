@@ -76,10 +76,11 @@ private function serializeSingle($book) : array
             });
         }
         
-        if ($request->claimed)
+        if (isset($request->claimed))
         {
-            $query = $query->where('claimed', $request->claimed);
+            $query = $query->where('claimed', intval($request->claimed));
         }
+        
 
         if ($request->genre)
         {
@@ -95,7 +96,7 @@ private function serializeSingle($book) : array
                 'message' => 'No Books Found'
             ], 404);
         }
-        return response()->json(["message" => "Books successfully retrieved", "data" => $serialized_books], 200);
+        return response()->json(["message" => "Books successfully retrieved", "data" => $serialized_books, "request->claimed" => $request->claimed], 200);
     }
 
     public function getSingleBookById (Request $request, $id) : JsonResponse
@@ -170,7 +171,6 @@ private function serializeSingle($book) : array
         }
             // Update the book details
             $book->user_name = null;
-            $book->user_email = null;
             $book->claimed = 0; // Set the claimed column to 1
             $book->save();
             return response()->json(['message' => 'Book returned successfully']);
