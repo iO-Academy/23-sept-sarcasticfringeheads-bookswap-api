@@ -96,7 +96,7 @@ private function serializeSingle($book) : array
                 'message' => 'No Books Found'
             ], 404);
         }
-        return response()->json(["message" => "Books successfully retrieved", "data" => $serialized_books, "request->claimed" => $request->claimed], 200);
+        return response()->json(["message" => "Books successfully retrieved", "data" => $serialized_books], 200);
     }
 
     public function getSingleBookById (Request $request, $id) : JsonResponse
