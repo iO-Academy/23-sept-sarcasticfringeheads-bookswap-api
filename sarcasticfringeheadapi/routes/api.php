@@ -30,3 +30,7 @@ Route::controller(BookController::class)->group(function () {
     Route::post('/reviews','createBookReview');
 });
 Route::get('/genres', [GenreController::class, 'getAllGenres']);
+
+Route::fallback(function () {
+    return response()->json(['message' => 'Route not found'], 404);
+});
